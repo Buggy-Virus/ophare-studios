@@ -87,6 +87,9 @@ body {
   color: #111;
   -webkit-text-size-adjust: 100%;
   font-kerning: normal;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -101,6 +104,9 @@ a:hover {
 /* Layout Wrappers */
 .c-page-content {
 	padding: 0px 0px;
+	flex: 1 0 auto;
+	display: flex;
+	flex-direction: column;
 }
 
 .c-d-wrapper {
@@ -109,7 +115,8 @@ a:hover {
     margin-left: auto;
     padding: 20px 40px;
     background-color: #fbfbfb;
-    min-height: 1010px;
+    width: 100%;
+    flex: 1 0 auto;
     box-shadow: 0 0 8px rgba(0,0,0,0.05);
 }
 
@@ -326,6 +333,7 @@ p.welcome-text {
     background: linear-gradient(top, #232323, #2a2a2a);
     position: relative;
     width: 100%;
+    flex-shrink: 0;
 }
 
 .c-center-wrapper {
