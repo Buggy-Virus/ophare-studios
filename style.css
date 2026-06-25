@@ -1,0 +1,388 @@
+/* ==========================================
+   RESET & BASE (From buggy-virus.github.io)
+   ========================================== */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+body {
+	line-height: 1;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+*, *:before, *:after {
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box;
+}
+
+/* ==========================================
+   FONTS
+   ========================================== */
+
+@font-face {
+  font-family: "Avenir Roman";
+  src: url("assets/AvenirLTStd-Roman.otf");
+}
+
+@font-face {
+  font-family: "Avenir Light";
+  src: url("assets/AvenirLTStd-Light.otf");
+}
+
+/* ==========================================
+   SITE STYLING
+   ========================================== */
+
+body {
+  background: #f6f6f6;
+  background: -webkit-linear-gradient(to right, #fcfcfc, #e4e4e4, #fcfcfc);
+  background: -o-linear-gradient(to right, #fcfcfc, #e4e4e4, #fcfcfc);
+  background: -moz-linear-gradient(to right, #fcfcfc, #e4e4e4, #fcfcfc);
+  background: linear-gradient(to right, #fcfcfc, #e4e4e4, #fcfcfc);
+  background-image: url('assets/background.png'), linear-gradient(to right, #fcfcfc, #e4e4e4, #fcfcfc);
+  background-repeat: repeat-y repeat-x;
+  font-family: "Avenir Light", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  color: #111;
+  -webkit-text-size-adjust: 100%;
+  font-kerning: normal;
+}
+
+a {
+  color: #2a7ae2;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Layout Wrappers */
+.c-page-content {
+	padding: 0px 0px;
+}
+
+.c-d-wrapper {
+    max-width: 780px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px 40px;
+    background-color: #fbfbfb;
+    min-height: 1010px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.c-h-wrapper {
+    max-width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0px 20px;
+}
+
+/* Header */
+.c-site-header {
+	min-height: 56px;
+	position: relative;
+	background: #454545;
+	background: -moz-linear-gradient(top, #5e5e5e, #454545);
+	background: -webkit-linear-gradient(top, #5e5e5e, #454545);
+	background: -ms-linear-gradient(top, #5e5e5e, #454545);
+	background: -o-linear-gradient(top, #5e5e5e, #454545);
+	background: linear-gradient(top, #5e5e5e, #454545);
+	box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.c-site-title {
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 56px;
+  letter-spacing: 4px;
+  margin-bottom: 0;
+  float: left;
+  vertical-align: middle;
+  font-family: "Avenir Roman" !important;
+  color: #ffffff !important;
+}
+
+.c-site-title:hover {
+  text-decoration: none;
+}
+
+.c-site-nav {
+  float: right;
+  line-height: 56px;
+}
+
+.c-site-nav .page-link {
+  color: #a1a1a1;
+  line-weight: 200;
+  font-family: "Avenir Roman" !important;
+  letter-spacing: 1px;
+  font-size: 18px;
+  margin-left: 20px;
+}
+
+.c-site-nav .page-link:hover {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+/* Project Cards Grid */
+.projects-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .projects-container {
+    justify-content: center;
+  }
+}
+
+.c-project {
+  width: 355px;
+  height: 215px;
+  background-color: #f4f4f4;
+  display: inline-block;
+  margin: 16px 0;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.c-project:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.c-project-link {
+  text-decoration: none;
+}
+
+.c-project-title-box {
+  width: 355px;
+  height: 35px;
+  padding: 0px 15px;
+  display: table;
+  background: #fbfbfb;
+  border-bottom: 1px solid #eee;
+}
+
+.c-project-title {
+  font-size: 19px;
+  letter-spacing: 1px;
+  vertical-align: middle;
+  display: table-cell;
+  color: #111;
+  font-family: "Avenir Roman" !important;
+  font-weight: bold;
+}
+
+.c-project-image-link img {
+  display: block;
+  border-bottom: 1px solid #eee;
+}
+
+.c-project-bar {
+  display: flex;
+  align-items: center;
+  width: 335px;
+  height: 30px;
+  padding: 0px 10px;
+  background: #fbfbfb;
+}
+
+.c-project-date {
+  margin: initial;
+  margin-right: auto;
+  color: #828282;
+  font-size: 14px;
+  font-family: "Avenir Light" !important;
+}
+
+/* Project Action Icons */
+.c-project-github-icon {
+  margin-left: 8px;
+  background-image: url('assets/light-github-icon-24.png');
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.c-project-github-icon:hover {
+  background-image: url('assets/github-icon-24.png');
+}
+
+.c-project-no-github-icon {
+  margin-left: 8px;
+  background-image: url('assets/strike-github-icon-24.png');
+  height: 24px;
+  width: 24px;
+}
+
+.c-project-private-github-icon {
+  margin-left: 8px;
+  background-image: url('assets/light-lock-icon-24.png');
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.c-project-private-github-icon:hover {
+  background-image: url('assets/lock-icon-24.png');
+}
+
+.c-project-page-icon {
+  margin-left: 8px;
+  background-image: url('assets/light-page-icon-24.png');
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
+}
+
+.c-project-page-icon:hover {
+  background-image: url('assets/page-icon-24.png');
+}
+
+.c-project-no-page-icon {
+  margin-left: 8px;
+  background-image: url('assets/strike-page-icon-24.png');
+  height: 24px;
+  width: 24px;
+}
+
+/* Page content elements */
+h1.page-heading {
+  font-family: "Avenir Roman", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+p.welcome-text {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Footer styling */
+.c-site-footer {
+    padding: 20px 0;
+    background: #2a2a2a;
+    background: -moz-linear-gradient(top, #232323, #2a2a2a);
+    background: -webkit-linear-gradient(top, #232323, #2a2a2a);
+    background: -ms-linear-gradient(top, #232323, #2a2a2a);
+    background: -o-linear-gradient(top, #232323, #2a2a2a);
+    background: linear-gradient(top, #232323, #2a2a2a);
+    position: relative;
+    width: 100%;
+}
+
+.c-center-wrapper {
+	margin: auto;
+	width: 264px;
+	display: flex;
+	justify-content: space-around;
+}
+
+.c-icon-contact, .c-icon-twitter, .c-icon-github, .c-icon-linkedin {
+	height: 46px;
+	width: 46px;
+	position: relative;
+}
+
+.c-icon-contact {
+	background-image: url('assets/mail-fav-nh.png');
+}
+.c-icon-contact:hover {
+	background-image: url('assets/mail-fav.png');
+}
+
+.c-icon-twitter {
+	background-image: url('assets/twitter-fav-nh.png');
+}
+.c-icon-twitter:hover {
+	background-image: url('assets/twitter-fav.png');
+}
+
+.c-icon-github {
+	background-image: url('assets/github-fav-nh.png');
+}
+.c-icon-github:hover {
+	background-image: url('assets/github-fav.png');
+}
+
+.c-icon-linkedin {
+	background-image: url('assets/linkedin-fav-nh.png');
+}
+.c-icon-linkedin:hover {
+	background-image: url('assets/linkedin-fav.png');
+}
+
+.c-link-spanner {
+	position: absolute; 
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+/* Preloader for hover states */
+.c-preload {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  z-index: -1;
+}
