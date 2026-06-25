@@ -322,6 +322,35 @@ p.welcome-text {
   color: #333;
 }
 
+.portal-list {
+  margin: 20px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portal-list li {
+  margin-bottom: 15px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.portal-list li a {
+  font-family: "Avenir Roman", sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+  color: #2a7ae2;
+}
+
+.portal-list li a:hover {
+  text-decoration: underline;
+}
+
+.portal-list .portal-desc {
+  color: #666;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
 /* Footer styling */
 .c-site-footer {
     padding: 20px 0;
