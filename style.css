@@ -338,22 +338,15 @@ p.welcome-text {
 
 .c-center-wrapper {
 	margin: auto;
-	width: 264px;
+	width: 198px;
 	display: flex;
 	justify-content: space-around;
 }
 
-.c-icon-contact, .c-icon-twitter, .c-icon-github, .c-icon-linkedin {
+.c-icon-twitter, .c-icon-github, .c-icon-linkedin {
 	height: 46px;
 	width: 46px;
 	position: relative;
-}
-
-.c-icon-contact {
-	background-image: url('assets/mail-fav-nh.png');
-}
-.c-icon-contact:hover {
-	background-image: url('assets/mail-fav.png');
 }
 
 .c-icon-twitter {
