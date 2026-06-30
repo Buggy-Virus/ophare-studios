@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Speed Stat Visualizer</title>
+    <script src="pokemon_data.js"></script>
+    <script src="pokemon_utils.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -288,10 +290,12 @@
 </head>
 
 <body>
-    <a href="index.html" style="position: fixed; top: 12px; left: 16px; font-family: 'Segoe UI', sans-serif; font-size: 13px; color: #666; text-decoration: none; z-index: 9999; letter-spacing: 0.5px;">← Home</a>
+    <a href="../index.html"
+        style="position: fixed; top: 12px; left: 16px; font-family: 'Segoe UI', sans-serif; font-size: 13px; color: #666; text-decoration: none; z-index: 9999; letter-spacing: 0.5px;">←
+        Home</a>
     <div class="container">
         <div style="text-align: center; margin-bottom: 20px;">
-            <img src="pokemon_speeds_logo.png" alt="Pokemon Speed Logo" style="max-width: 500px; height: auto;">
+            <img src="../pokemon_speeds_logo.png" alt="Pokemon Speed Logo" style="max-width: 500px; height: auto;">
         </div>
 
 
@@ -302,7 +306,7 @@
         <div class="controls">
             <div style="display: flex; gap: 10px; align-items: center;">
                 <div class="custom-dropdown" id="custom-dropdown">
-                    <button class="dropdown-btn" id="dropdown-btn">Select Set: Regulation MA</button>
+                    <button class="dropdown-btn" id="dropdown-btn">Select Set: Regulation M-A</button>
                     <div class="dropdown-content" id="dropdown-content"></div>
                 </div>
 
@@ -342,556 +346,83 @@
 
 
     <script>
-        // Embedded data (subset for testing/brevity, can be expanded)
-        const rawCsvData = `Pokemon,Base
-(Galarian) Slowbro,50
-Aerodactyl Mega,170
-(Galarian) Stunfisk,32
-Abomasnow,80
-Abomasnow Mega,50
-Absol,95
-Absol Mega,135
-Alakazam Mega,170
-Dragapult,162
-Lopunny Mega,155
-Delphox Mega,154
-Aerodactyl,150
-Gengar Mega,150
-Alcremie,84
-Talonflame,146
-Alolan Raichu,130
-Altaria (Mega),100
-Ampharos,75
-Ampharos Mega,65
-Appletun,50
-Araquanid,62
-Arbok,100
-Meowstic Mega,144
-Meowscarada,143
-Ariados,60
-Armarouge,95
-Aromatisse,49
-Audino (Mega),70
-Aurorus,78
-Avalugg,48
-Avalugg (Hisuian),58
-Azumarill,70
-Banette,85
-Banette Mega,95
-Alakazam,140
-Bastiodon,50
-Beartic,70
-Beedrill,95
-Beedrill Mega,165
-Bellibolt,65
-Froslass Mega,140
-Camerupt,60
-Camerupt Mega,40
-Castform,90
-Ceruledge,105
-Chandelure,100
-Chandelure Mega,110
-Sneasler,140
-Chesnaught,84
-Chesnaught Mega,64
-Chimecho,85
-Clawitzer,79
-Starmie Mega,140
-Whimsicott,136
-Cofagrigus,50
-Starmie,135
-Maushold,131
-Froslass,130
-Gengar,130
-Decidueye,90
-Dedenne,121
-Hisuian Zoroark,130
-Skarmory Mega,130
-Diggersby,98
-Ditto,68
-Alolan Ninetales,129
-Lopunny,125
-Delphox,124
-Meowstic,124
-Emboar,85
-Emboar Mega,95
-Emolga,123
-Empoleon,80
-Espathra,125
-Espeon,130
-Excadrill Mega,123
-Floette Mega,122
-Garchomp,122
-Glimmora Mega,121
-Charizard (Mega),120
-Flapple,90
-Flareon,85
-Dragonite Mega,120
-Florges,95
-Forretress,60
-Gardevoir Mega,120
-Kangaskhan Mega,120
-Furfrou,122
-Gallade,100
-Gallade Mega,130
-Garbodor,95
-Ninetales,120
-Garchomp Mega,112
-Palafin,120
-Paldean Tauros,120
-Garganacl,55
-Typhlosion,120
-Mimikyu,116
-Glaceon,85
-Glalie,100
-Glalie Mega,120
-Arcanine,115
-Hisuian Typhlosian,115
-Gliscor,115
-Golurk Mega,75
-Goodra,100
-Gourgeist,104
-Gourgeist (Jumbo),74
-Gourgeist (Large),89
-Gourgeist (Small),119
-Greninja,144
-Greninja Mega,162
-Eternal Floette,112
-Hatterene,49
-Hawlucha,138
-Hawlucha Mega,138
-Helioisk,129
-Heracross,105
-Heracross Mega,95
-Hippowdon,67
-Rotom,111
-Hisuian Decidueye,80
-Hisuian Goodra,80
-Hisuian Samurott,105
-Hisuian Arcanine,110
-Kangaskhan,110
-Houndoom,115
-Houndoom Mega,135
-Hydrapple,64
-Hydreigon,118
-Excadrill,108
-Infernape,128
-Jolteon,150
-Glimmora,106
-Rotom (Other Forms),106
-Archaludon,105
-Kleavor,105
-Klefki,95
-Kommo-o,105
-Krookodile,112
-Leafeon,115
-Liepard,126
-Gyarados (Mega),101
-Milotic,101
-Lucario,90
-Lucario Mega,132
-Luxray,90
-Lycanroc (Dusk),130
-Lycanroc (Midday),112
-Lycanroc (Midnight),102
-Machamp,75
-Mamoswine,100
-Manectric,125
-Manectric Mega,155
-Dragonite,100
-Medicham,100
-Medicham Mega,120
-Gardevoir,100
-Venusaur,100
-Venusaur Mega,100
-Meganium (Mega),100
-Vanilluxe,99
-Basculegion,98
-Morpeko,117
-Mr. Rime,90
-Mudsdale,55
-Blastoise (Mega),98
-Noivern,143
-Oranguru,80
-Feraligatr (Mega),98
-Scizor Mega,95
-Scovillain,95
-Pangoro,78
-Passimian,100
-Scovillain Mega,95
-Pidgeot,121
-Pidgeot Mega,141
-Pikachu,110
-Pinsir,105
-Pinsir Mega,125
-Poleteageist,90
-Politoed,90
-Tsareena,92
-Quaquaval,105
-Raichu,130
-Rampardos,78
-Reuniclus,50
-Rhyperior,60
-Roserade,110
-Tyranitar Mega,91
-Clefable Mega,90
-Runerigus,50
-Sinistcha,90
-Sableye Mega,40
-Salazzle,137
-Samurott,90
-Sandaconda,91
-Skarmory,90
-Corviknight,87
-Orthworm,85
-Pelipper,85
-Serperior,133
-Sharpedo,115
-Sharpedo Mega,125
-Simipour,121
-Simisage,121
-Simisear,121
-Scizor,85
-Tyranitar,81
-Aegislash,80
-Skeledirge,86
-Slowbro Mega,50
-Slurpuff,92
-Clefable,80
-Snorlax,50
-Spiritomb,55
-Farigiraf,80
-Incineroar,80
-Steelix (Mega),50
-Primarina,80
-Sylveon,80
-Taurous,130
-Tinkaton,114
-Aggron (Mega),70
-Torterra,76
-Toucannon,80
-Toxapex,55
-Toxicroak,105
-Trevenant,76
-Kingambit,70
-Sableye,70
-Conkeldurr,65
-Crabominable,63
-Tyrantrum,91
-Umbreon,85
-Drampa (Mega),56
-Vaporeon,85
-Crabominable Mega,53
-Galarian Slowking,50
-Victreebel,90
-Victreebel Mega,90
-Vivillon,109
-Volcarona,120
-Watchhog,97
-Weavile,145
-Torkoal,40
-Wyrdeer,85
-Zoroark,125`;
-
-
-        const dexData = {
-            "(Galarian) Slowbro": 80,
-            "Aerodactyl Mega": 142,
-            "(Galarian) Stunfisk": 618,
-            "Abomasnow": 460,
-            "Abomasnow Mega": 460,
-            "Absol": 359,
-            "Absol Mega": 359,
-            "Alakazam Mega": 65,
-            "Dragapult": 887,
-            "Lopunny Mega": 428,
-            "Delphox Mega": 655,
-            "Aerodactyl": 142,
-            "Gengar Mega": 94,
-            "Alcremie": 869,
-            "Talonflame": 663,
-            "Alolan Raichu": 26,
-            "Altaria (Mega)": 334,
-            "Ampharos": 181,
-            "Ampharos Mega": 181,
-            "Appletun": 842,
-            "Araquanid": 752,
-            "Arbok": 24,
-            "Meowstic Mega": 678,
-            "Meowscarada": 908,
-            "Ariados": 168,
-            "Armarouge": 936,
-            "Aromatisse": 683,
-            "Audino (Mega)": 531,
-            "Aurorus": 699,
-            "Avalugg": 713,
-            "Avalugg (Hisuian)": 713,
-            "Azumarill": 184,
-            "Banette": 354,
-            "Banette Mega": 354,
-            "Alakazam": 65,
-            "Bastiodon": 411,
-            "Beartic": 614,
-            "Beedrill": 15,
-            "Beedrill Mega": 15,
-            "Bellibolt": 939,
-            "Froslass Mega": 478,
-            "Camerupt": 323,
-            "Camerupt Mega": 323,
-            "Castform": 351,
-            "Ceruledge": 937,
-            "Chandelure": 609,
-            "Chandelure Mega": 609,
-            "Sneasler": 903,
-            "Chesnaught": 652,
-            "Chesnaught Mega": 652,
-            "Chimecho": 358,
-            "Clawitzer": 693,
-            "Starmie Mega": 121,
-            "Whimsicott": 547,
-            "Cofagrigus": 563,
-            "Starmie": 121,
-            "Maushold": 925,
-            "Froslass": 478,
-            "Gengar": 94,
-            "Decidueye": 724,
-            "Dedenne": 702,
-            "Hisuian Zoroark": 571,
-            "Skarmory Mega": 227,
-            "Diggersby": 660,
-            "Ditto": 132,
-            "Alolan Ninetales": 38,
-            "Lopunny": 428,
-            "Delphox": 655,
-            "Meowstic": 678,
-            "Emboar": 500,
-            "Emboar Mega": 500,
-            "Emolga": 587,
-            "Empoleon": 395,
-            "Espathra": 956,
-            "Espeon": 196,
-            "Excadrill Mega": 530,
-            "Floette Mega": 670,
-            "Garchomp": 445,
-            "Glimmora Mega": 970,
-            "Charizard (Mega)": 6,
-            "Flapple": 841,
-            "Flareon": 136,
-            "Dragonite Mega": 149,
-            "Florges": 671,
-            "Forretress": 205,
-            "Gardevoir Mega": 282,
-            "Kangaskhan Mega": 115,
-            "Furfrou": 676,
-            "Gallade": 475,
-            "Gallade Mega": 475,
-            "Garbodor": 569,
-            "Ninetales": 38,
-            "Garchomp Mega": 445,
-            "Palafin": 964,
-            "Paldean Tauros": 128,
-            "Garganacl": 934,
-            "Typhlosion": 157,
-            "Mimikyu": 778,
-            "Glaceon": 471,
-            "Glalie": 362,
-            "Glalie Mega": 362,
-            "Arcanine": 59,
-            "Hisuian Typhlosian": 157,
-            "Gliscor": 472,
-            "Golurk Mega": 623,
-            "Goodra": 706,
-            "Gourgeist": 711,
-            "Gourgeist (Jumbo)": 711,
-            "Gourgeist (Large)": 711,
-            "Gourgeist (Small)": 711,
-            "Greninja": 658,
-            "Greninja Mega": 658,
-            "Eternal Floette": 670,
-            "Hatterene": 858,
-            "Hawlucha": 701,
-            "Hawlucha Mega": 701,
-            "Helioisk": 695,
-            "Heracross": 214,
-            "Heracross Mega": 214,
-            "Hippowdon": 450,
-            "Rotom": 479,
-            "Hisuian Decidueye": 724,
-            "Hisuian Goodra": 706,
-            "Hisuian Samurott": 503,
-            "Hisuian Arcanine": 59,
-            "Kangaskhan": 115,
-            "Houndoom": 229,
-            "Houndoom Mega": 229,
-            "Hydrapple": 1019,
-            "Hydreigon": 635,
-            "Excadrill": 530,
-            "Infernape": 392,
-            "Jolteon": 135,
-            "Glimmora": 970,
-            "Rotom (Other Forms)": 479,
-            "Archaludon": 1018,
-            "Kleavor": 900,
-            "Klefki": 707,
-            "Kommo-o": 784,
-            "Krookodile": 553,
-            "Leafeon": 470,
-            "Liepard": 510,
-            "Gyarados (Mega)": 130,
-            "Milotic": 350,
-            "Lucario": 448,
-            "Lucario Mega": 448,
-            "Luxray": 405,
-            "Lycanroc (Dusk)": 745,
-            "Lycanroc (Midday)": 745,
-            "Lycanroc (Midnight)": 745,
-            "Machamp": 68,
-            "Mamoswine": 473,
-            "Manectric": 310,
-            "Manectric Mega": 310,
-            "Dragonite": 149,
-            "Medicham": 308,
-            "Medicham Mega": 308,
-            "Gardevoir": 282,
-            "Venusaur": 3,
-            "Venusaur Mega": 3,
-            "Meganium (Mega)": 154,
-            "Vanilluxe": 584,
-            "Basculegion": 902,
-            "Morpeko": 877,
-            "Mr. Rime": 866,
-            "Mudsdale": 750,
-            "Blastoise (Mega)": 9,
-            "Noivern": 715,
-            "Oranguru": 765,
-            "Feraligatr (Mega)": 160,
-            "Scizor Mega": 212,
-            "Scovillain": 952,
-            "Pangoro": 675,
-            "Passimian": 766,
-            "Scovillain Mega": 952,
-            "Pidgeot": 18,
-            "Pidgeot Mega": 18,
-            "Pikachu": 25,
-            "Pinsir": 127,
-            "Pinsir Mega": 127,
-            "Poleteageist": 855,
-            "Politoed": 186,
-            "Tsareena": 763,
-            "Quaquaval": 914,
-            "Raichu": 26,
-            "Rampardos": 409,
-            "Reuniclus": 579,
-            "Rhyperior": 464,
-            "Roserade": 407,
-            "Tyranitar Mega": 248,
-            "Clefable Mega": 36,
-            "Runerigus": 867,
-            "Sinistcha": 1013,
-            "Sableye Mega": 302,
-            "Salazzle": 758,
-            "Samurott": 503,
-            "Sandaconda": 844,
-            "Skarmory": 227,
-            "Corviknight": 823,
-            "Orthworm": 968,
-            "Pelipper": 279,
-            "Serperior": 497,
-            "Sharpedo": 319,
-            "Sharpedo Mega": 319,
-            "Simipour": 516,
-            "Simisage": 512,
-            "Simisear": 514,
-            "Scizor": 212,
-            "Tyranitar": 248,
-            "Aegislash": 681,
-            "Skeledirge": 911,
-            "Slowbro Mega": 80,
-            "Slurpuff": 685,
-            "Clefable": 36,
-            "Snorlax": 143,
-            "Spiritomb": 442,
-            "Farigiraf": 981,
-            "Incineroar": 727,
-            "Steelix (Mega)": 208,
-            "Primarina": 730,
-            "Sylveon": 700,
-            "Taurous": 128,
-            "Tinkaton": 959,
-            "Aggron (Mega)": 306,
-            "Torterra": 389,
-            "Toucannon": 733,
-            "Toxapex": 748,
-            "Toxicroak": 454,
-            "Trevenant": 709,
-            "Kingambit": 983,
-            "Sableye": 302,
-            "Conkeldurr": 534,
-            "Crabominable": 740,
-            "Tyrantrum": 697,
-            "Umbreon": 197,
-            "Drampa (Mega)": 780,
-            "Vaporeon": 134,
-            "Crabominable Mega": 740,
-            "Galarian Slowking": 199,
-            "Victreebel": 71,
-            "Victreebel Mega": 71,
-            "Vivillon": 666,
-            "Volcarona": 637,
-            "Watchhog": 505,
-            "Weavile": 461,
-            "Torkoal": 324,
-            "Wyrdeer": 899,
-            "Zoroark": 571
-        };
-
-
-        // Parse CSV
+        // Populate base stats mapping dynamically from POKEMON_DATA
         const pokemonData = {};
-        const lines = rawCsvData.trim().split('\n');
-        const headers = lines[0].split(',');
-        for (let i = 1; i < lines.length; i++) {
-            const cols = lines[i].split(',');
-            if (cols.length < 2) continue;
-            let name = cols[0];
-            const match = name.match(/^(\([^)]+\))\s*(.+)$/);
-            if (match) {
-                name = match[2] + ' ' + match[1];
-            }
-            const baseSpeed = parseInt(cols[1]);
+        Object.entries(window.PokemonData.POKEMON_DATA).forEach(([name, data]) => {
             pokemonData[name] = {
-                base: baseSpeed,
-                dex: dexData[cols[0]] || 0
+                base: data.bs.sp,
+                dex: data.num || 0
             };
-        }
+        });
 
+        // Speed Stat Calculations utilizing the formula inside window.PokemonUtils
+        function calculateBreakpoints(input) {
+            let name = input;
+            if (typeof input === 'number') {
+                // Lookup name by base speed mapping if passed as number
+                const foundName = Object.keys(pokemonData).find(k => pokemonData[k].base === input);
+                if (foundName) {
+                    name = foundName;
+                } else {
+                    // Fallback to manual formula if name mapping fails
+                    const B = input;
+                    const dnat = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Timid')).sp;
+                    const base = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Neutral')).sp;
+                    const EV = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Neutral')).sp;
+                    const Nat = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Timid')).sp;
+                    const scarf = Math.floor(EV * 1.5);
+                    const Max = Math.floor(Nat * 1.5);
+                    return { dnat, base, EV, Nat, scarf, Max };
+                }
+            }
 
-        // Stat Formulas
-        function calculateBreakpoints(B) {
-            const dnat = Math.floor(B * 0.9);
-            const base = B;
-            const EV = B + 32;
-            const Nat = Math.floor(EV * 1.1);
+            const dnat = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Timid')).sp;
+            const base = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Neutral')).sp;
+            const EV = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Neutral')).sp;
+            const Nat = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Timid')).sp;
             const scarf = Math.floor(EV * 1.5);
             const Max = Math.floor(Nat * 1.5);
             return { dnat, base, EV, Nat, scarf, Max };
         }
 
+        // Format set name keys for visual display
+        function formatSetKey(setKey) {
+            if (setKey === 'reg-m-a') return 'Regulation M-A';
+            if (setKey === 'reg-m-b') return 'Regulation M-B';
+            if (setKey.startsWith('gen')) {
+                return 'Generation ' + setKey.substring(3);
+            }
+            if (setKey === 'none') return 'None';
+            if (setKey === 'temporary') return 'Temporary Set';
+            return setKey.charAt(0).toUpperCase() + setKey.slice(1);
+        }
 
         // State
-        let currentSet = "regulation_ma";
-        let visiblePokemon = Object.keys(pokemonData); // Start with all
+        let currentSet = "reg-m-a";
+        let visiblePokemon = [];
         let customSets = {
-            'regulation_ma': Object.keys(pokemonData),
             'none': []
         };
+
+        // Populate selectable default sets dynamically from pokemon_data.js
+        Object.entries(window.PokemonData.POKEMON_DATA).forEach(([name, data]) => {
+            data.sets.forEach(setTag => {
+                if (!customSets[setTag]) {
+                    customSets[setTag] = [];
+                }
+                customSets[setTag].push(name);
+            });
+        });
+
+        // Initialize visible list to default set
+        visiblePokemon = [...(customSets[currentSet] || [])];
+
         let isEditing = false;
         let activeCustomSet = null;
         let editVisiblePokemon = []; // Pokemon shown in edit mode
         let editMinSpeed = null;
         let editMaxSpeed = null;
         let currentSort = "speed_desc"; // Default sort
-
 
         // UI Elements
         const listContainer = document.getElementById('pokemon-list');
@@ -902,11 +433,9 @@ Zoroark,125`;
         const suggestionsList = document.getElementById('pokemon-suggestions');
         const sortSelect = document.getElementById('sort-select');
 
-
         // Custom Dropdown Elements
         const dropdownBtn = document.getElementById('dropdown-btn');
         const dropdownContent = document.getElementById('dropdown-content');
-
 
         // Populate suggestions
         Object.keys(pokemonData).forEach(name => {
@@ -915,59 +444,48 @@ Zoroark,125`;
             suggestionsList.appendChild(opt);
         });
 
-
         // Custom Dropdown Logic
         function populateDropdown() {
             dropdownContent.innerHTML = '';
             const sets = Object.keys(customSets);
-
 
             sets.forEach(setKey => {
                 const item = document.createElement('div');
                 item.className = 'dropdown-item';
                 item.onclick = () => selectSet(setKey);
 
-
                 const nameSpan = document.createElement('span');
-                nameSpan.textContent = setKey === 'regulation_ma' ? 'Regulation MA' : setKey === 'none' ? 'None' : setKey;
+                nameSpan.textContent = formatSetKey(setKey);
                 item.appendChild(nameSpan);
-
 
                 const btnDiv = document.createElement('div');
                 btnDiv.className = 'dropdown-item-buttons';
-
 
                 const plusBtn = document.createElement('button');
                 plusBtn.textContent = '+';
                 plusBtn.onclick = (e) => { e.stopPropagation(); unionSet(setKey); };
                 btnDiv.appendChild(plusBtn);
 
-
                 const minusBtn = document.createElement('button');
                 minusBtn.textContent = '-';
                 minusBtn.onclick = (e) => { e.stopPropagation(); differenceSet(setKey); };
                 btnDiv.appendChild(minusBtn);
-
 
                 item.appendChild(btnDiv);
                 dropdownContent.appendChild(item);
             });
         }
 
-
         function selectSet(setKey) {
             currentSet = setKey;
             isEditing = false;
-            if (setKey === 'regulation_ma') {
-                visiblePokemon = Object.keys(pokemonData);
-            } else if (customSets[setKey]) {
+            if (customSets[setKey]) {
                 visiblePokemon = [...customSets[setKey]];
             }
-            dropdownBtn.textContent = `Select Set: ${setKey === 'regulation_ma' ? 'Regulation MA' : setKey === 'none' ? 'None' : setKey}`;
+            dropdownBtn.textContent = `Select Set: ${formatSetKey(setKey)}`;
             dropdownContent.classList.remove('show');
             render();
         }
-
 
         function unionSet(setKey) {
             const setToAdd = customSets[setKey] || [];
@@ -976,7 +494,6 @@ Zoroark,125`;
             render();
         }
 
-
         function differenceSet(setKey) {
             const setToRemove = customSets[setKey] || [];
             visiblePokemon = visiblePokemon.filter(p => !setToRemove.includes(p));
@@ -984,12 +501,10 @@ Zoroark,125`;
             render();
         }
 
-
         dropdownBtn.onclick = () => {
             populateDropdown();
             dropdownContent.classList.toggle('show');
         };
-
 
         // Close dropdown when clicking outside
         window.onclick = (event) => {
@@ -1000,40 +515,32 @@ Zoroark,125`;
             }
         };
 
-
         function render() {
             // 1. Determine which Pokemon to show
             let pokemonToShow = [];
             if (isEditing && activeCustomSet) {
                 pokemonToShow = editVisiblePokemon;
-            } else if (currentSet === 'regulation_ma') {
-                pokemonToShow = Object.keys(pokemonData);
             } else if (customSets[currentSet]) {
                 pokemonToShow = customSets[currentSet];
             } else if (currentSet === 'temporary') {
                 pokemonToShow = visiblePokemon;
             }
 
-
             // 2. Calculate and Sort
             const calculatedData = {};
             pokemonToShow.forEach(name => {
-                const base = pokemonData[name].base;
-                calculatedData[name] = calculateBreakpoints(base);
+                calculatedData[name] = calculateBreakpoints(name);
             });
-
 
             // Sorting
             pokemonToShow.sort((a, b) => {
                 if (currentSort === 'name_asc') return a.localeCompare(b);
                 if (currentSort === 'name_desc') return b.localeCompare(a);
 
-
                 const speedA = pokemonData[a].base;
                 const speedB = pokemonData[b].base;
                 if (currentSort === 'speed_desc') return speedB - speedA;
                 if (currentSort === 'speed_asc') return speedA - speedB;
-
 
                 const dexA = pokemonData[a].dex || 0;
                 const dexB = pokemonData[b].dex || 0;
@@ -1048,20 +555,17 @@ Zoroark,125`;
                 return 0;
             });
 
-
             // 3. Calculate global min/max to scale axis
             let minSpeed = Infinity;
             let maxSpeed = -Infinity;
 
-
             pokemonToShow.forEach(name => {
                 const breakpoints = calculatedData[name];
-                if (!isEditing || (isEditing && customSets[activeCustomSet].includes(name))) {
+                if (breakpoints && (!isEditing || (isEditing && customSets[activeCustomSet].includes(name)))) {
                     minSpeed = Math.min(minSpeed, breakpoints.dnat);
                     maxSpeed = Math.max(maxSpeed, breakpoints.Max);
                 }
             });
-
 
             if (isEditing && editMinSpeed !== null) {
                 minSpeed = editMinSpeed;
@@ -1071,25 +575,23 @@ Zoroark,125`;
                 maxSpeed = 100;
             }
 
-
             const range = maxSpeed - minSpeed;
             const getPct = (val) => ((val - minSpeed) / range) * 100;
-
 
             // 4. Render Axis
             axisContainer.innerHTML = '';
             const allBreakpoints = new Set();
             const axisPokemonSource = (isEditing && activeCustomSet) ? editVisiblePokemon : pokemonToShow;
 
-
             axisPokemonSource.forEach(name => {
                 if (!isEditing || (isEditing && customSets[activeCustomSet].includes(name))) {
-                    const bp = calculatedData[name] || calculateBreakpoints(pokemonData[name].base);
-                    Object.values(bp).forEach(v => allBreakpoints.add(v));
+                    const bp = calculatedData[name] || calculateBreakpoints(name);
+                    if (bp) {
+                        Object.values(bp).forEach(v => allBreakpoints.add(v));
+                    }
                 }
             });
             const sortedBreakpoints = Array.from(allBreakpoints).sort((a, b) => a - b);
-
 
             sortedBreakpoints.forEach(val => {
                 const pct = getPct(val);
@@ -1101,14 +603,13 @@ Zoroark,125`;
                 }
             });
 
-
             // 5. Render Rows
             listContainer.innerHTML = '';
             pokemonToShow.forEach(name => {
-                const bp = calculatedData[name] || calculateBreakpoints(pokemonData[name].base);
+                const bp = calculatedData[name] || calculateBreakpoints(name);
+                if (!bp) return;
                 const row = document.createElement('div');
                 row.className = 'pokemon-row';
-
 
                 let isInSet = true;
                 if (isEditing && activeCustomSet) {
@@ -1120,22 +621,18 @@ Zoroark,125`;
                     row.onclick = () => togglePokemonInCustomSet(name);
                 }
 
-
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'pokemon-name';
 
-
                 const dexSpan = document.createElement('span');
                 dexSpan.className = 'dex-num';
-                dexSpan.textContent = pokemonData[name].dex ? `#${pokemonData[name].dex}` : '#?';
+                dexSpan.textContent = pokemonData[name] && pokemonData[name].dex ? `#${pokemonData[name].dex}` : '#?';
                 nameDiv.appendChild(dexSpan);
-
 
                 const textSpan = document.createElement('span');
                 textSpan.className = 'poke-name-text';
                 textSpan.textContent = name;
                 nameDiv.appendChild(textSpan);
-
 
                 if (!isEditing) {
                     const removeBtn = document.createElement('button');
@@ -1148,26 +645,21 @@ Zoroark,125`;
                     nameDiv.appendChild(removeBtn); // Append after name text
                 }
 
-
                 row.appendChild(nameDiv);
-
 
                 const visDiv = document.createElement('div');
                 visDiv.className = 'visualization';
-
 
                 const localMin = bp.dnat;
                 const localMax = bp.Max;
                 const lineLeft = getPct(localMin);
                 const lineWidth = getPct(localMax) - lineLeft;
 
-
                 const line = document.createElement('div');
                 line.className = 'range-line';
                 line.style.left = `${lineLeft}%`;
                 line.style.width = `${lineWidth}%`;
                 visDiv.appendChild(line);
-
 
                 const types = ['dnat', 'base', 'EV', 'Nat', 'scarf', 'Max'];
                 types.forEach(type => {
@@ -1180,11 +672,9 @@ Zoroark,125`;
                     visDiv.appendChild(circle);
                 });
 
-
                 row.appendChild(visDiv);
                 listContainer.appendChild(row);
             });
-
 
             // Update buttons
             if (isEditing) {
@@ -1193,7 +683,7 @@ Zoroark,125`;
                 editCustomSetBtn.style.display = 'inline-block';
             } else {
                 createCustomSetBtn.style.display = 'inline-block';
-                if (currentSet !== 'regulation_ma' && currentSet !== 'temporary' && currentSet !== 'none') {
+                if (currentSet !== 'temporary' && currentSet !== 'none') {
                     editCustomSetBtn.style.display = 'inline-block';
                     editCustomSetBtn.textContent = 'Edit Set';
                 } else {
@@ -1201,7 +691,6 @@ Zoroark,125`;
                 }
             }
         }
-
 
         function removePokemon(name) {
             const row = Array.from(listContainer.children).find(r => r.querySelector('.poke-name-text').textContent === name);
@@ -1215,14 +704,12 @@ Zoroark,125`;
             }
         }
 
-
         function switchToTemporary() {
             if (currentSet !== 'temporary') {
                 currentSet = 'temporary';
                 dropdownBtn.textContent = 'Select Set: Temporary Set';
             }
         }
-
 
         function togglePokemonInCustomSet(name) {
             const set = customSets[activeCustomSet];
@@ -1235,7 +722,6 @@ Zoroark,125`;
             render();
         }
 
-
         // Event Listeners
         createCustomSetBtn.onclick = () => {
             const setName = prompt("Enter custom set name:");
@@ -1247,21 +733,20 @@ Zoroark,125`;
                 editVisiblePokemon = [...visiblePokemon];
                 dropdownBtn.textContent = `Select Set: ${setName}`;
 
-
                 // Freeze axis
                 const currentBreakpoints = [];
                 visiblePokemon.forEach(n => {
-                    const bp = calculateBreakpoints(pokemonData[n].base);
-                    currentBreakpoints.push(bp.dnat, bp.Max);
+                    const bp = calculateBreakpoints(n);
+                    if (bp) {
+                        currentBreakpoints.push(bp.dnat, bp.Max);
+                    }
                 });
                 editMinSpeed = Math.min(...currentBreakpoints);
                 editMaxSpeed = Math.max(...currentBreakpoints);
 
-
                 render();
             }
         };
-
 
         editCustomSetBtn.onclick = () => {
             if (isEditing) {
@@ -1275,27 +760,25 @@ Zoroark,125`;
                 isEditing = true;
                 editVisiblePokemon = [...visiblePokemon];
 
-
                 // Freeze axis
                 const currentBreakpoints = [];
                 visiblePokemon.forEach(n => {
-                    const bp = calculateBreakpoints(pokemonData[n].base);
-                    currentBreakpoints.push(bp.dnat, bp.Max);
+                    const bp = calculateBreakpoints(n);
+                    if (bp) {
+                        currentBreakpoints.push(bp.dnat, bp.Max);
+                    }
                 });
                 editMinSpeed = Math.min(...currentBreakpoints);
                 editMaxSpeed = Math.max(...currentBreakpoints);
-
 
                 render();
             }
         };
 
-
         searchInput.onkeypress = (e) => {
             if (e.key === 'Enter') {
                 const name = searchInput.value.trim();
                 const matchedName = Object.keys(pokemonData).find(k => k.toLowerCase() === name.toLowerCase());
-
 
                 if (matchedName) {
                     if (isEditing && activeCustomSet) {
@@ -1319,16 +802,13 @@ Zoroark,125`;
             }
         };
 
-
         sortSelect.onchange = (e) => {
             currentSort = e.target.value;
             render();
-        };
-
+        }
 
         // Initial render
-        populateDropdown();
-        render();
+        selectSet('reg-m-b');
     </script>
 </body>
 
