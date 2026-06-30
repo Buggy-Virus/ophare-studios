@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokémon Optimal Bulk Calculator</title>
+    <title>Pokémon Bulk Calculator</title>
     <style>
         /* ==========================================
            RESET & CORE STYLE
@@ -667,8 +667,8 @@
     <div class="container">
         <header>
             <h1>Pokémon Optimal Bulk Calculator</h1>
-            <p>Populate "User Stats" with an initial spread that doesn't use all 66 stat points. Hitting calculate will
-                show the allocation that maximizes bulk with the leftover stat points.</p>
+            <p>Populate "User Stats" with an initial stat spread. Calculate will
+                allocate the leftover stat points to maximizes bulk.</p>
         </header>
 
         <div class="columns-grid">
@@ -935,7 +935,7 @@
                 input.className = 'stat-input';
                 input.min = '0';
                 input.max = '32';
-                
+
                 // Default Attack to 32 for physical attacker, SpA to 32 for special attacker
                 let defVal = '0';
                 if (!isDefender) {
