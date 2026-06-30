@@ -5,8 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Speed Stat Visualizer</title>
-    <script src="pokemon_data.js"></script>
-    <script src="pokemon_utils.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -286,6 +284,24 @@
             align-items: center;
             justify-content: center;
         }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #475569;
+            font-size: 12px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #94a3b8;
+        }
     </style>
 </head>
 
@@ -344,18 +360,26 @@
         <div id="pokemon-list"></div>
     </div>
 
+    <footer>
+        Developed by <a href="https://buggy-virus.github.io" target="_blank">Oliver Hare</a> | OPHare Studios &copy;
+        2026
+    </footer>
 
-    <script>
+
+    <script type="module">
+        import { POKEMON_DATA } from './pokemon_data.js';
+        import { calculateFinalStats, PokemonBuild } from './pokemon_utils.js';
+
         // Populate base stats mapping dynamically from POKEMON_DATA
         const pokemonData = {};
-        Object.entries(window.PokemonData.POKEMON_DATA).forEach(([name, data]) => {
+        Object.entries(POKEMON_DATA).forEach(([name, data]) => {
             pokemonData[name] = {
                 base: data.bs.sp,
                 dex: data.num || 0
             };
         });
 
-        // Speed Stat Calculations utilizing the formula inside window.PokemonUtils
+        // Speed Stat Calculations utilizing the formula inside PokemonUtils
         function calculateBreakpoints(input) {
             let name = input;
             if (typeof input === 'number') {
@@ -366,20 +390,20 @@
                 } else {
                     // Fallback to manual formula if name mapping fails
                     const B = input;
-                    const dnat = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Timid')).sp;
-                    const base = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Neutral')).sp;
-                    const EV = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Neutral')).sp;
-                    const Nat = window.PokemonUtils.calculateFinalStats({ sp: B }, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Timid')).sp;
+                    const dnat = calculateFinalStats({ sp: B }, new PokemonBuild({ sp: 0 }, 'Brave')).sp;
+                    const base = calculateFinalStats({ sp: B }, new PokemonBuild({ sp: 0 }, 'Neutral')).sp;
+                    const EV = calculateFinalStats({ sp: B }, new PokemonBuild({ sp: 32 }, 'Neutral')).sp;
+                    const Nat = calculateFinalStats({ sp: B }, new PokemonBuild({ sp: 32 }, 'Timid')).sp;
                     const scarf = Math.floor(EV * 1.5);
                     const Max = Math.floor(Nat * 1.5);
                     return { dnat, base, EV, Nat, scarf, Max };
                 }
             }
 
-            const dnat = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Timid')).sp;
-            const base = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 0 }, 'Neutral')).sp;
-            const EV = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Neutral')).sp;
-            const Nat = window.PokemonUtils.calculateFinalStats(name, new window.PokemonUtils.PokemonBuild({ sp: 32 }, 'Timid')).sp;
+            const dnat = calculateFinalStats(name, new PokemonBuild({ sp: 0 }, 'Brave')).sp;
+            const base = calculateFinalStats(name, new PokemonBuild({ sp: 0 }, 'Neutral')).sp;
+            const EV = calculateFinalStats(name, new PokemonBuild({ sp: 32 }, 'Neutral')).sp;
+            const Nat = calculateFinalStats(name, new PokemonBuild({ sp: 32 }, 'Timid')).sp;
             const scarf = Math.floor(EV * 1.5);
             const Max = Math.floor(Nat * 1.5);
             return { dnat, base, EV, Nat, scarf, Max };
@@ -405,7 +429,7 @@
         };
 
         // Populate selectable default sets dynamically from pokemon_data.js
-        Object.entries(window.PokemonData.POKEMON_DATA).forEach(([name, data]) => {
+        Object.entries(POKEMON_DATA).forEach(([name, data]) => {
             data.sets.forEach(setTag => {
                 if (!customSets[setTag]) {
                     customSets[setTag] = [];
