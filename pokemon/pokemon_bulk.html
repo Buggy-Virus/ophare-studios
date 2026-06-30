@@ -17,12 +17,8 @@
 
         body {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #0d0f17;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(31, 38, 68, 0.3) 0, transparent 50%),
-                radial-gradient(at 50% 0%, rgba(15, 23, 42, 0.5) 0, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(20, 30, 55, 0.4) 0, transparent 50%);
-            color: #e2e8f0;
+            background-color: #121212;
+            color: #e0e0e0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -31,36 +27,16 @@
         }
 
         /* Home Button Link */
-        .home-link {
-            position: fixed;
-            top: 15px;
-            left: 20px;
-            font-size: 14px;
-            color: #94a3b8;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            z-index: 100;
-            transition: color 0.2s ease, transform 0.2s ease;
-            background: rgba(30, 41, 59, 0.5);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-        }
-
-        .home-link:hover {
-            color: #38bdf8;
-            transform: translateX(-3px);
-            border-color: rgba(56, 189, 248, 0.3);
-        }
 
         /* Container */
         .container {
             max-width: 1300px;
             width: 100%;
             margin: 40px auto 20px auto;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -74,15 +50,13 @@
         header h1 {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #8ab4f8;
             margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
 
         header p {
-            color: #94a3b8;
+            color: #9aa0a6;
             font-size: 1rem;
         }
 
@@ -95,44 +69,19 @@
 
         /* Card Component */
         .card {
-            background: rgba(22, 28, 45, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
+            background: #2d2d2d;
+            border: 1px solid #5f6368;
+            border-radius: 8px;
             padding: 20px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             display: flex;
             flex-direction: column;
             gap: 16px;
-            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease;
             position: relative;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            border-radius: 16px 16px 0 0;
-        }
-
-        .card-defender::before {
-            background: linear-gradient(to right, #00f2fe, #4facfe);
-        }
-
-        .card-phys-attacker::before {
-            background: linear-gradient(to right, #ff0844, #ffb199);
-        }
-
-        .card-spec-attacker::before {
-            background: linear-gradient(to right, #7f00ff, #e100ff);
-        }
-
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+            border-color: #8ab4f8;
         }
 
         .card-header {
@@ -153,17 +102,9 @@
             letter-spacing: -0.2px;
         }
 
-        .card-defender .card-title {
-            color: #38bdf8;
-        }
-
-        .card-phys-attacker .card-title {
-            color: #f87171;
-        }
-
-        .card-spec-attacker .card-title {
-            color: #c084fc;
-        }
+        .card-defender .card-title { color: #8ab4f8; }
+        .card-phys-attacker .card-title { color: #ff4d4d; }
+        .card-spec-attacker .card-title { color: #c084fc; }
 
         /* Search input & datalist wrapper */
         .search-wrapper {
@@ -173,18 +114,17 @@
         .search-input {
             width: 100%;
             padding: 10px 14px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
+            background: #1e1e1e;
+            border: 1px solid #5f6368;
+            border-radius: 4px;
+            color: #e0e0e0;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.2s ease;
         }
 
         .search-input:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            border-color: #8ab4f8;
         }
 
         /* Badges for Pokemon Types */
@@ -310,10 +250,10 @@
         .nature-select {
             flex-grow: 1;
             padding: 8px 12px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
+            background: #1e1e1e;
+            border: 1px solid #5f6368;
+            border-radius: 4px;
+            color: #e0e0e0;
             font-size: 13px;
             outline: none;
             cursor: pointer;
@@ -321,7 +261,7 @@
         }
 
         .nature-select:focus {
-            border-color: #6366f1;
+            border-color: #8ab4f8;
         }
 
         /* Stat Table styling */
@@ -335,9 +275,9 @@
         .stats-table th {
             text-align: left;
             padding: 6px 8px;
-            color: #94a3b8;
+            color: #9aa0a6;
             font-weight: 600;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #5f6368;
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -345,7 +285,7 @@
 
         .stats-table td {
             padding: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid #3c4043;
             vertical-align: middle;
         }
 
@@ -356,7 +296,7 @@
         }
 
         .stat-base-val {
-            color: #94a3b8;
+            color: #9aa0a6;
             font-family: monospace;
             width: 45px;
             text-align: right;
@@ -368,12 +308,12 @@
         }
 
         .stat-input {
-            width: 100%;
+            width: 70px;
             padding: 4px 8px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: #1e1e1e;
+            border: 1px solid #5f6368;
             border-radius: 4px;
-            color: #fff;
+            color: #e0e0e0;
             text-align: center;
             font-family: monospace;
             font-size: 13px;
@@ -381,22 +321,21 @@
         }
 
         .stat-input:focus {
-            border-color: #3b82f6;
-            background: rgba(15, 23, 42, 0.8);
+            border-color: #8ab4f8;
         }
 
         .stat-calc-cell {
             width: 80px;
             text-align: center;
             font-weight: bold;
-            color: #10b981;
+            color: #4dff4d;
             font-family: monospace;
         }
 
         .stat-final-cell {
             text-align: right;
             font-weight: 700;
-            color: #fff;
+            color: #e0e0e0;
             font-family: monospace;
             font-size: 14px;
             width: 60px;
@@ -407,10 +346,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(15, 23, 42, 0.4);
+            background: #1e1e1e;
             padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            border: 1px solid #5f6368;
             margin-top: 5px;
         }
 
@@ -423,10 +362,10 @@
         .power-input {
             width: 70px;
             padding: 5px 8px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            color: #fff;
+            background: #1e1e1e;
+            border: 1px solid #5f6368;
+            border-radius: 4px;
+            color: #e0e0e0;
             font-family: monospace;
             font-size: 14px;
             text-align: center;
@@ -434,7 +373,7 @@
         }
 
         .power-input:focus {
-            border-color: #6366f1;
+            border-color: #8ab4f8;
         }
 
         /* Validation / Status Indicator */
@@ -443,14 +382,14 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 12px;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 8px;
+            background: #1e1e1e;
+            border-radius: 4px;
             font-size: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid #5f6368;
         }
 
         .points-label {
-            color: #94a3b8;
+            color: #9aa0a6;
         }
 
         .points-value {
@@ -459,22 +398,22 @@
         }
 
         .points-value.valid {
-            color: #10b981;
+            color: #4dff4d;
         }
 
         .points-value.warning {
-            color: #f59e0b;
+            color: #ffa64d;
         }
 
         .points-value.invalid {
-            color: #ef4444;
+            color: #ff4d4d;
         }
 
         /* Action Buttons Section */
         .actions-section {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
+            background: #2d2d2d;
+            border: 1px solid #5f6368;
+            border-radius: 8px;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -491,14 +430,15 @@
 
         .btn {
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 4px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             outline: none;
             transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background-color: #2d2d2d;
+            border: 1px solid #5f6368;
+            color: #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -506,47 +446,48 @@
         }
 
         .btn-physical {
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+            border-color: rgba(255, 77, 77, 0.4);
+            color: rgba(255, 224, 224, 0.9);
         }
-
         .btn-physical:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+            background-color: #3c4043;
+            border-color: #ff4d4d;
+            color: #ff4d4d;
         }
 
         .btn-special {
-            background: linear-gradient(135deg, #a855f7 0%, #6d28d9 100%);
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+            border-color: rgba(192, 132, 252, 0.4);
+            color: rgba(243, 232, 255, 0.9);
         }
-
         .btn-special:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+            background-color: #3c4043;
+            border-color: #c084fc;
+            color: #c084fc;
         }
 
         .btn-mixed {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            border-color: rgba(138, 180, 248, 0.4);
+            color: rgba(232, 240, 254, 0.9);
         }
-
         .btn-mixed:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            background-color: #3c4043;
+            border-color: #8ab4f8;
+            color: #8ab4f8;
         }
 
         .btn:disabled {
-            opacity: 0.4;
+            opacity: 0.3;
             cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
+            background-color: #1e1e1e !important;
+            border-color: #3c4043 !important;
+            color: #5f6368 !important;
         }
 
         /* Results Card */
         .results-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px dashed rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
+            background: #2d2d2d;
+            border: 1px dashed #5f6368;
+            border-radius: 8px;
             padding: 20px;
             display: none;
             flex-direction: column;
@@ -569,8 +510,8 @@
         .results-title {
             font-size: 1.1rem;
             font-weight: 700;
-            color: #38bdf8;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #8ab4f8;
+            border-bottom: 1px solid #5f6368;
             padding-bottom: 8px;
             display: flex;
             align-items: center;
@@ -579,9 +520,9 @@
 
         .results-badge {
             font-size: 11px;
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid #38bdf8;
-            color: #38bdf8;
+            background: rgba(138, 180, 248, 0.15);
+            border: 1px solid #8ab4f8;
+            color: #8ab4f8;
             padding: 2px 8px;
             border-radius: 4px;
             font-weight: 600;
@@ -594,15 +535,15 @@
         }
 
         .result-item {
-            background: rgba(15, 23, 42, 0.5);
+            background: #1e1e1e;
             padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 4px;
+            border: 1px solid #3c4043;
         }
 
         .result-item-label {
             font-size: 11px;
-            color: #94a3b8;
+            color: #9aa0a6;
             text-transform: uppercase;
             margin-bottom: 4px;
             letter-spacing: 0.3px;
@@ -611,24 +552,24 @@
         .result-item-value {
             font-size: 1.25rem;
             font-weight: bold;
-            color: #fff;
+            color: #e0e0e0;
             font-family: monospace;
         }
 
         .highlight-green {
-            color: #10b981;
+            color: #4dff4d;
         }
 
         .highlight-cyan {
-            color: #06b6d4;
+            color: #8ab4f8;
         }
 
         .highlight-violet {
-            color: #a855f7;
+            color: #c084fc;
         }
 
         .highlight-red {
-            color: #ef4444;
+            color: #ff4d4d;
         }
 
         .result-description {
@@ -662,11 +603,15 @@
 </head>
 
 <body>
-    <a href="../index.html" class="home-link">← Home</a>
+    <a href="../index.html"
+        style="position: fixed; top: 12px; left: 16px; font-family: 'Segoe UI', sans-serif; font-size: 13px; color: #666; text-decoration: none; z-index: 9999; letter-spacing: 0.5px; display: inline-block; transition: color 0.2s, transform 0.2s;"
+        onmouseover="this.style.color='#fff'; this.style.transform='translateX(-3px)';"
+        onmouseout="this.style.color='#666'; this.style.transform='none';">←
+        Home</a>
 
     <div class="container">
         <header>
-            <h1>Pokémon Optimal Bulk Calculator</h1>
+            <h1>Pokémon Bulk Calculator</h1>
             <p>Populate "User Stats" with an initial stat spread. Calculate will
                 allocate the leftover stat points to maximizes bulk.</p>
         </header>
@@ -1338,10 +1283,10 @@
                 if (el) {
                     const val = parseInt(el.textContent) || 0;
                     if (val > 0) {
-                        el.style.color = '#34d399';
-                        el.style.textShadow = '0 0 8px rgba(52, 211, 153, 0.4)';
+                        el.style.color = '#4dff4d';
+                        el.style.textShadow = '0 0 8px rgba(77, 255, 77, 0.4)';
                     } else {
-                        el.style.color = '#94a3b8';
+                        el.style.color = '#9aa0a6';
                         el.style.textShadow = 'none';
                     }
                 }
