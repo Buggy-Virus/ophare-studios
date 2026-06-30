@@ -1,0 +1,8 @@
+{
+  "name": "OPHare Studios",
+  "short_name": "OPHare Studios",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0d0f17",
+  "theme_color": "#0d0f17"
+}

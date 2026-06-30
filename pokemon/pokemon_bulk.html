@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Optimal Bulk Calculator</title>
+    <style>
+        /* ==========================================
+           RESET & CORE STYLE
+           ========================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0d0f17;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(31, 38, 68, 0.3) 0, transparent 50%),
+                radial-gradient(at 50% 0%, rgba(15, 23, 42, 0.5) 0, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(20, 30, 55, 0.4) 0, transparent 50%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Home Button Link */
+        .home-link {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            font-size: 14px;
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 100;
+            transition: color 0.2s ease, transform 0.2s ease;
+            background: rgba(30, 41, 59, 0.5);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .home-link:hover {
+            color: #38bdf8;
+            transform: translateX(-3px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1300px;
+            width: 100%;
+            margin: 40px auto 20px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* Columns Grid */
+        .columns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        /* Card Component */
+        .card {
+            background: rgba(22, 28, 45, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-defender::before {
+            background: linear-gradient(to right, #00f2fe, #4facfe);
+        }
+
+        .card-phys-attacker::before {
+            background: linear-gradient(to right, #ff0844, #ffb199);
+        }
+
+        .card-spec-attacker::before {
+            background: linear-gradient(to right, #7f00ff, #e100ff);
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .card-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .card-defender .card-title {
+            color: #38bdf8;
+        }
+
+        .card-phys-attacker .card-title {
+            color: #f87171;
+        }
+
+        .card-spec-attacker .card-title {
+            color: #c084fc;
+        }
+
+        /* Search input & datalist wrapper */
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Badges for Pokemon Types */
+        .type-badge-container {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .type-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Type colors map */
+        .type-normal {
+            background-color: #A8A77A;
+            color: #fff;
+        }
+
+        .type-fire {
+            background-color: #EE8130;
+            color: #fff;
+        }
+
+        .type-water {
+            background-color: #6390F0;
+            color: #fff;
+        }
+
+        .type-electric {
+            background-color: #F7D02C;
+            color: #111;
+        }
+
+        .type-grass {
+            background-color: #7AC74C;
+            color: #fff;
+        }
+
+        .type-ice {
+            background-color: #96D9D6;
+            color: #111;
+        }
+
+        .type-fighting {
+            background-color: #C22E28;
+            color: #fff;
+        }
+
+        .type-poison {
+            background-color: #A33EA1;
+            color: #fff;
+        }
+
+        .type-ground {
+            background-color: #E2BF65;
+            color: #111;
+        }
+
+        .type-flying {
+            background-color: #A98FF3;
+            color: #fff;
+        }
+
+        .type-psychic {
+            background-color: #F95587;
+            color: #fff;
+        }
+
+        .type-bug {
+            background-color: #A6B91A;
+            color: #fff;
+        }
+
+        .type-rock {
+            background-color: #B6A136;
+            color: #fff;
+        }
+
+        .type-ghost {
+            background-color: #705746;
+            color: #fff;
+        }
+
+        .type-dragon {
+            background-color: #6F35FC;
+            color: #fff;
+        }
+
+        .type-steel {
+            background-color: #B7B7CE;
+            color: #111;
+        }
+
+        .type-fairy {
+            background-color: #D685AD;
+            color: #fff;
+        }
+
+        .type-dark {
+            background-color: #705746;
+            color: #fff;
+        }
+
+        /* Nature Selection */
+        .select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .select-wrapper label {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .nature-select {
+            flex-grow: 1;
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease;
+        }
+
+        .nature-select:focus {
+            border-color: #6366f1;
+        }
+
+        /* Stat Table styling */
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .stats-table th {
+            text-align: left;
+            padding: 6px 8px;
+            color: #94a3b8;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stats-table td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            vertical-align: middle;
+        }
+
+        .stat-name {
+            font-weight: bold;
+            color: #cbd5e1;
+            width: 50px;
+        }
+
+        .stat-base-val {
+            color: #94a3b8;
+            font-family: monospace;
+            width: 45px;
+            text-align: right;
+            padding-right: 15px !important;
+        }
+
+        .stat-input-cell {
+            width: 80px;
+        }
+
+        .stat-input {
+            width: 100%;
+            padding: 4px 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            color: #fff;
+            text-align: center;
+            font-family: monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .stat-input:focus {
+            border-color: #3b82f6;
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .stat-calc-cell {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+            color: #10b981;
+            font-family: monospace;
+        }
+
+        .stat-final-cell {
+            text-align: right;
+            font-weight: 700;
+            color: #fff;
+            font-family: monospace;
+            font-size: 14px;
+            width: 60px;
+        }
+
+        /* Power Input styling */
+        .power-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.4);
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 5px;
+        }
+
+        .power-wrapper label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .power-input {
+            width: 70px;
+            padding: 5px 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+        }
+
+        .power-input:focus {
+            border-color: #6366f1;
+        }
+
+        /* Validation / Status Indicator */
+        .points-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .points-label {
+            color: #94a3b8;
+        }
+
+        .points-value {
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .points-value.valid {
+            color: #10b981;
+        }
+
+        .points-value.warning {
+            color: #f59e0b;
+        }
+
+        .points-value.invalid {
+            color: #ef4444;
+        }
+
+        /* Action Buttons Section */
+        .actions-section {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 240px;
+        }
+
+        .btn-physical {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-physical:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-special {
+            background: linear-gradient(135deg, #a855f7 0%, #6d28d9 100%);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-special:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-mixed {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-mixed:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Results Card */
+        .results-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #38bdf8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .results-badge {
+            font-size: 11px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .result-item {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .result-item-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 0.3px;
+        }
+
+        .result-item-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        .highlight-green {
+            color: #10b981;
+        }
+
+        .highlight-cyan {
+            color: #06b6d4;
+        }
+
+        .highlight-violet {
+            color: #a855f7;
+        }
+
+        .highlight-red {
+            color: #ef4444;
+        }
+
+        .result-description {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.5;
+            background: rgba(30, 41, 59, 0.3);
+            padding: 10px 14px;
+            border-radius: 6px;
+            border-left: 3px solid #6366f1;
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: #475569;
+            font-size: 12px;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../index.html" class="home-link">← Home</a>
+
+    <div class="container">
+        <header>
+            <h1>Pokémon Optimal Bulk Calculator</h1>
+            <p>Populate "User Stats" with an initial spread that doesn't use all 66 stat points. Hitting calculate will
+                show the allocation that maximizes bulk with the leftover stat points.</p>
+        </header>
+
+        <div class="columns-grid">
+            <!-- 1. DEFENDING POKEMON -->
+            <div class="card card-defender">
+                <div class="card-header">
+                    <div class="card-title-row">
+                        <h2 class="card-title">Defending Pokémon</h2>
+                        <div class="type-badge-container" id="def-types"></div>
+                    </div>
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" id="def-search" list="pokemon-suggestions"
+                            placeholder="Search defending Pokémon...">
+                    </div>
+                    <div class="select-wrapper">
+                        <label for="def-nature">Nature:</label>
+                        <select class="nature-select" id="def-nature"></select>
+                    </div>
+                </div>
+
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th style="text-align: right; padding-right: 15px;">Base</th>
+                            <th>User Pts</th>
+                            <th style="text-align: center;">Calculated Pts</th>
+                            <th style="text-align: right;">Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="def-stats-rows"></tbody>
+                </table>
+
+                <div class="points-summary">
+                    <span class="points-label">Total Stat Points:</span>
+                    <span class="points-value" id="def-points-total">0 / 66</span>
+                </div>
+            </div>
+
+            <!-- 2. PHYSICAL ATTACKER -->
+            <div class="card card-phys-attacker">
+                <div class="card-header">
+                    <div class="card-title-row">
+                        <h2 class="card-title">Physical Attacker</h2>
+                        <div class="type-badge-container" id="phys-types"></div>
+                    </div>
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" id="phys-search" list="pokemon-suggestions"
+                            placeholder="Search physical attacker...">
+                    </div>
+                    <div class="select-wrapper">
+                        <label for="phys-nature">Nature:</label>
+                        <select class="nature-select" id="phys-nature"></select>
+                    </div>
+                </div>
+
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th style="text-align: right; padding-right: 15px;">Base</th>
+                            <th>Stat Pts</th>
+                            <th style="text-align: right;">Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="phys-stats-rows"></tbody>
+                </table>
+
+                <div class="power-wrapper">
+                    <label for="phys-power">Physical Move Power</label>
+                    <input type="number" class="power-input" id="phys-power" value="80" min="0" max="250">
+                </div>
+            </div>
+
+            <!-- 3. SPECIAL ATTACKER -->
+            <div class="card card-spec-attacker">
+                <div class="card-header">
+                    <div class="card-title-row">
+                        <h2 class="card-title">Special Attacker</h2>
+                        <div class="type-badge-container" id="spec-types"></div>
+                    </div>
+                    <div class="search-wrapper">
+                        <input type="text" class="search-input" id="spec-search" list="pokemon-suggestions"
+                            placeholder="Search special attacker...">
+                    </div>
+                    <div class="select-wrapper">
+                        <label for="spec-nature">Nature:</label>
+                        <select class="nature-select" id="spec-nature"></select>
+                    </div>
+                </div>
+
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Stat</th>
+                            <th style="text-align: right; padding-right: 15px;">Base</th>
+                            <th>Stat Pts</th>
+                            <th style="text-align: right;">Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spec-stats-rows"></tbody>
+                </table>
+
+                <div class="power-wrapper">
+                    <label for="spec-power">Special Move Power</label>
+                    <input type="number" class="power-input" id="spec-power" value="80" min="0" max="250">
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ACTION PANEL -->
+        <div class="actions-section">
+            <div class="button-group">
+                <button class="btn btn-physical" id="btn-calc-physical" disabled>Calculate Physical Max Bulk</button>
+                <button class="btn btn-special" id="btn-calc-special" disabled>Calculate Special Max Bulk</button>
+                <button class="btn btn-mixed" id="btn-calc-mixed" disabled>Calculate Mixed Max Bulk</button>
+            </div>
+
+            <!-- Results Output -->
+            <div class="results-card" id="results-panel">
+                <div class="results-title">
+                    <span id="results-title-text">Calculation Result</span>
+                    <span class="results-badge" id="results-type-badge">PHYSICAL</span>
+                </div>
+                <div class="results-grid">
+                    <div class="result-item">
+                        <div class="result-item-label">Optimal Point Setup (HP / Def / SpD)</div>
+                        <div class="result-item-value highlight-cyan" id="res-pts">0 / 0 / 0</div>
+                    </div>
+                    <div class="result-item" id="res-damage-phys-container">
+                        <div class="result-item-label">Physical Damage (Min / Max HP)</div>
+                        <div class="result-item-value highlight-red" id="res-dmg-phys">0 / 0</div>
+                    </div>
+                    <div class="result-item" id="res-damage-spec-container">
+                        <div class="result-item-label">Special Damage (Min / Max HP)</div>
+                        <div class="result-item-value highlight-violet" id="res-dmg-spec">0 / 0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-item-label">Min Health Lost Fraction</div>
+                        <div class="result-item-value highlight-green" id="res-fraction">0.00%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <datalist id="pokemon-suggestions"></datalist>
+
+    <footer>
+        Developed by <a href="https://buggy-virus.github.io" target="_blank">Oliver Hare</a> | OPHare Studios &copy;
+        2026
+    </footer>
+
+    <!-- load ES module code -->
+    <script type="module">
+        import { POKEMON_DATA } from './pokemon_data.js';
+        import { calculateFinalStats, getAlignmentMultiplier, NATURE_EFFECTS, PokemonBuild } from './pokemon_utils.js';
+
+        // State variables
+        let selectedDef = 'Aegislash';
+        let selectedPhys = 'Garchomp';
+        let selectedSpec = 'Charizard';
+
+        // Optimized additions to defender stats
+        let defCalculatedAdditions = { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 };
+
+        // Initialize autocomplete options
+        const suggestionList = document.getElementById('pokemon-suggestions');
+        const sortedNames = Object.keys(POKEMON_DATA).sort();
+        sortedNames.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            suggestionList.appendChild(option);
+        });
+
+        // Initialize Nature options
+        const natures = Object.keys(NATURE_EFFECTS).sort();
+
+        function populateNatures(selectElement, defaultNature = 'Neutral') {
+            selectElement.innerHTML = '';
+
+            // Add Neutral/Hardy explicitly first or just load all
+            natures.forEach(nat => {
+                const opt = document.createElement('option');
+                opt.value = nat;
+
+                // Show description of boosted/reduced stats
+                const effects = NATURE_EFFECTS[nat];
+                let desc = '';
+                const boosted = Object.keys(effects).find(k => effects[k] > 1.0);
+                const reduced = Object.keys(effects).find(k => effects[k] < 1.0);
+
+                if (boosted && reduced) {
+                    desc = ` (+${boosted.toUpperCase()}, -${reduced.toUpperCase()})`;
+                } else {
+                    desc = ' (Neutral)';
+                }
+
+                opt.textContent = nat + desc;
+                if (nat === defaultNature) opt.selected = true;
+                selectElement.appendChild(opt);
+            });
+        }
+
+        const defNatureSelect = document.getElementById('def-nature');
+        const physNatureSelect = document.getElementById('phys-nature');
+        const specNatureSelect = document.getElementById('spec-nature');
+
+        populateNatures(defNatureSelect, 'Hardy');
+        populateNatures(physNatureSelect, 'Adamant');
+        populateNatures(specNatureSelect, 'Modest');
+
+        // Formats the type badges
+        function updateTypeBadges(containerId, pokemonName) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const data = POKEMON_DATA[pokemonName];
+            if (data && data.types) {
+                data.types.forEach(t => {
+                    const badge = document.createElement('span');
+                    badge.className = `type-badge type-${t.toLowerCase()}`;
+                    badge.textContent = t;
+                    container.appendChild(badge);
+                });
+            }
+        }
+
+        // Creates row elements for stats table
+        function createStatsRows(pokemonName, containerId, isDefender) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const data = POKEMON_DATA[pokemonName];
+            if (!data) return;
+
+            const statMapping = [
+                { key: 'hp', name: 'HP' },
+                { key: 'at', name: 'Atk' },
+                { key: 'df', name: 'Def' },
+                { key: 'sa', name: 'SpA' },
+                { key: 'sd', name: 'SpD' },
+                { key: 'sp', name: 'Spe' }
+            ];
+
+            statMapping.forEach(item => {
+                const tr = document.createElement('tr');
+
+                // Stat Name
+                const tdName = document.createElement('td');
+                tdName.className = 'stat-name';
+                tdName.textContent = item.name;
+                tr.appendChild(tdName);
+
+                // Base Stat
+                const tdBase = document.createElement('td');
+                tdBase.className = 'stat-base-val';
+                tdBase.textContent = data.bs[item.key] || 0;
+                tr.appendChild(tdBase);
+
+                // User Points Input
+                const tdInput = document.createElement('td');
+                tdInput.className = 'stat-input-cell';
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'stat-input';
+                input.min = '0';
+                input.max = '32';
+                
+                // Default Attack to 32 for physical attacker, SpA to 32 for special attacker
+                let defVal = '0';
+                if (!isDefender) {
+                    if (containerId.includes('phys') && item.key === 'at') {
+                        defVal = '32';
+                    } else if (containerId.includes('spec') && item.key === 'sa') {
+                        defVal = '32';
+                    }
+                }
+                input.value = defVal;
+                input.dataset.stat = item.key;
+                input.dataset.role = isDefender ? 'def' : (containerId.includes('phys') ? 'phys' : 'spec');
+
+                // Keep inputs clean and within bounds
+                input.addEventListener('input', (e) => {
+                    let val = parseInt(e.target.value) || 0;
+                    if (val < 0) val = 0;
+                    if (val > 32) val = 32;
+                    e.target.value = val;
+
+                    if (isDefender) {
+                        // Clear calculated additions when user changes base stats to keep it honest
+                        resetDefenderCalculated();
+                    }
+
+                    updateAllStats();
+                });
+
+                tdInput.appendChild(input);
+                tr.appendChild(tdInput);
+
+                // Calculated Points (only for Defender)
+                if (isDefender) {
+                    const tdCalc = document.createElement('td');
+                    tdCalc.className = 'stat-calc-cell';
+                    tdCalc.id = `def-calc-${item.key}`;
+                    tdCalc.textContent = '-';
+                    tr.appendChild(tdCalc);
+                }
+
+                // Final Stat Value
+                const tdFinal = document.createElement('td');
+                tdFinal.className = 'stat-final-cell';
+                tdFinal.id = `${isDefender ? 'def' : (containerId.includes('phys') ? 'phys' : 'spec')}-final-${item.key}`;
+                tdFinal.textContent = '0';
+                tr.appendChild(tdFinal);
+
+                container.appendChild(tr);
+            });
+        }
+
+        // Resets the calculated additions column
+        function resetDefenderCalculated() {
+            defCalculatedAdditions = { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 };
+            const keys = ['hp', 'at', 'df', 'sa', 'sd', 'sp'];
+            keys.forEach(k => {
+                const el = document.getElementById(`def-calc-${k}`);
+                if (el) el.textContent = '-';
+            });
+            document.getElementById('results-panel').style.display = 'none';
+        }
+
+        // Gets the current user set points for a given role ('def', 'phys', 'spec')
+        function getUserPoints(role) {
+            const inputs = document.querySelectorAll(`.stat-input[data-role="${role}"]`);
+            const pts = { hp: 0, at: 0, df: 0, sa: 0, sd: 0, sp: 0 };
+            inputs.forEach(input => {
+                const stat = input.dataset.stat;
+                pts[stat] = parseInt(input.value) || 0;
+            });
+            return pts;
+        }
+
+        // Updates calculated final values for a given pokemon column
+        function updateStatsForColumn(pokemonName, role, natureSelectId, userPts, extraPts = null) {
+            const data = POKEMON_DATA[pokemonName];
+            if (!data) return;
+
+            const alignment = document.getElementById(natureSelectId).value;
+            const combinedPts = { ...userPts };
+            if (extraPts) {
+                Object.keys(combinedPts).forEach(k => {
+                    combinedPts[k] += (extraPts[k] || 0);
+                });
+            }
+
+            const build = new PokemonBuild(combinedPts, alignment);
+            const finalStats = calculateFinalStats(pokemonName, build);
+
+            Object.entries(finalStats).forEach(([stat, val]) => {
+                const cell = document.getElementById(`${role}-final-${stat}`);
+                if (cell) cell.textContent = val;
+            });
+        }
+
+        // Validates defender points and updates total counts
+        function updateDefenderPointsSummary() {
+            const userPts = getUserPoints('def');
+            const totalUser = Object.values(userPts).reduce((a, b) => a + b, 0);
+
+            const summarySpan = document.getElementById('def-points-total');
+            summarySpan.textContent = `${totalUser} / 66`;
+
+            // Adjust styling based on limit
+            if (totalUser > 66) {
+                summarySpan.className = 'points-value invalid';
+                disableCalculateButtons(true);
+            } else if (totalUser === 66) {
+                summarySpan.className = 'points-value warning';
+                disableCalculateButtons(false);
+            } else {
+                summarySpan.className = 'points-value valid';
+                disableCalculateButtons(false);
+            }
+        }
+
+        function disableCalculateButtons(disabled) {
+            document.getElementById('btn-calc-physical').disabled = disabled;
+            document.getElementById('btn-calc-special').disabled = disabled;
+            document.getElementById('btn-calc-mixed').disabled = disabled;
+        }
+
+        // Master update function
+        function updateAllStats() {
+            if (POKEMON_DATA[selectedDef]) {
+                const defUser = getUserPoints('def');
+                updateStatsForColumn(selectedDef, 'def', 'def-nature', defUser, defCalculatedAdditions);
+                updateDefenderPointsSummary();
+            }
+            if (POKEMON_DATA[selectedPhys]) {
+                const physUser = getUserPoints('phys');
+                updateStatsForColumn(selectedPhys, 'phys', 'phys-nature', physUser);
+            }
+            if (POKEMON_DATA[selectedSpec]) {
+                const specUser = getUserPoints('spec');
+                updateStatsForColumn(selectedSpec, 'spec', 'spec-nature', specUser);
+            }
+        }
+
+        // Pokémon Damage Formula (Level 50)
+        function calculateDamage(power, attack, defense) {
+            const levelFactor = 22; // Math.floor((2 * 50) / 5) + 2 = 22
+            const baseDamage = Math.floor((levelFactor * power * attack) / defense);
+            const finalDamage = Math.floor(baseDamage / 50) + 2;
+            return finalDamage;
+        }
+
+        // Setup Search/Select Events
+        function setupSearch(inputId, badgeContainerId, statsContainerId, role, natureSelectId, onSelectCallback) {
+            const input = document.getElementById(inputId);
+            input.addEventListener('change', (e) => {
+                const name = e.target.value;
+                if (POKEMON_DATA[name]) {
+                    onSelectCallback(name);
+                    updateTypeBadges(badgeContainerId, name);
+                    createStatsRows(name, statsContainerId, role === 'def');
+                    resetDefenderCalculated();
+                    updateAllStats();
+                }
+            });
+            // Select text on focus for usability
+            input.addEventListener('focus', (e) => e.target.select());
+        }
+
+        // Setup nature changes
+        [defNatureSelect, physNatureSelect, specNatureSelect].forEach(select => {
+            select.addEventListener('change', () => {
+                resetDefenderCalculated();
+                updateAllStats();
+            });
+        });
+
+        // Initialize selections
+        setupSearch('def-search', 'def-types', 'def-stats-rows', 'def', 'def-nature', (name) => selectedDef = name);
+        setupSearch('phys-search', 'phys-types', 'phys-stats-rows', 'phys', 'phys-nature', (name) => selectedPhys = name);
+        setupSearch('spec-search', 'spec-types', 'spec-stats-rows', 'spec', 'spec-nature', (name) => selectedSpec = name);
+
+        // Load Default Pokemon Details
+        document.getElementById('def-search').value = selectedDef;
+        document.getElementById('phys-search').value = selectedPhys;
+        document.getElementById('spec-search').value = selectedSpec;
+
+        updateTypeBadges('def-types', selectedDef);
+        updateTypeBadges('phys-types', selectedPhys);
+        updateTypeBadges('spec-types', selectedSpec);
+
+        createStatsRows(selectedDef, 'def-stats-rows', true);
+        createStatsRows(selectedPhys, 'phys-stats-rows', false);
+        createStatsRows(selectedSpec, 'spec-stats-rows', false);
+
+        updateAllStats();
+
+        // ─── SOLVERS & OPTIMIZERS ───────────────────────────────────────────────────
+
+        // Physical Bulk Optimizer
+        document.getElementById('btn-calc-physical').addEventListener('click', () => {
+            const defUser = getUserPoints('def');
+            const totalUser = Object.values(defUser).reduce((a, b) => a + b, 0);
+            if (totalUser > 66) return;
+
+            const leftovers = 66 - totalUser;
+            const maxHPAlloc = 32 - defUser.hp;
+            const maxDefAlloc = 32 - defUser.df;
+            const pointsToAllocate = Math.min(leftovers, maxHPAlloc + maxDefAlloc);
+
+            // Fetch physical attacker attack final stat
+            const physUser = getUserPoints('phys');
+            const physNature = document.getElementById('phys-nature').value;
+            const physBuild = new PokemonBuild(physUser, physNature);
+            const physStats = calculateFinalStats(selectedPhys, physBuild);
+            const physAtk = physStats.at;
+            const physPower = parseInt(document.getElementById('phys-power').value) || 0;
+
+            const defNature = document.getElementById('def-nature').value;
+            const baseStats = POKEMON_DATA[selectedDef].bs;
+
+            let bestHP = 0;
+            let bestDef = 0;
+            let minFraction = Infinity;
+            let bestDmg = 0;
+            let bestFinalHP = 0;
+
+            // Iterate over all possible additions
+            for (let cHP = 0; cHP <= pointsToAllocate; cHP++) {
+                const cDef = pointsToAllocate - cHP;
+                if (cHP <= maxHPAlloc && cDef <= maxDefAlloc) {
+                    const tempPts = { ...defUser };
+                    tempPts.hp += cHP;
+                    tempPts.df += cDef;
+
+                    const finalStats = calculateFinalStats(selectedDef, new PokemonBuild(tempPts, defNature));
+                    const currentHP = finalStats.hp;
+                    const currentDef = finalStats.df;
+
+                    const dmg = calculateDamage(physPower, physAtk, currentDef);
+                    const fraction = dmg / currentHP;
+
+                    if (fraction < minFraction) {
+                        minFraction = fraction;
+                        bestHP = cHP;
+                        bestDef = cDef;
+                        bestDmg = dmg;
+                        bestFinalHP = currentHP;
+                    }
+                }
+            }
+
+            // Save results
+            defCalculatedAdditions = { hp: bestHP, at: 0, df: bestDef, sa: 0, sd: 0, sp: 0 };
+            displayResults('PHYSICAL', bestHP, bestDef, 0, bestDmg, null, minFraction, bestFinalHP);
+        });
+
+        // Special Bulk Optimizer
+        document.getElementById('btn-calc-special').addEventListener('click', () => {
+            const defUser = getUserPoints('def');
+            const totalUser = Object.values(defUser).reduce((a, b) => a + b, 0);
+            if (totalUser > 66) return;
+
+            const leftovers = 66 - totalUser;
+            const maxHPAlloc = 32 - defUser.hp;
+            const maxSpDAlloc = 32 - defUser.sd;
+            const pointsToAllocate = Math.min(leftovers, maxHPAlloc + maxSpDAlloc);
+
+            // Fetch special attacker SpA final stat
+            const specUser = getUserPoints('spec');
+            const specNature = document.getElementById('spec-nature').value;
+            const specBuild = new PokemonBuild(specUser, specNature);
+            const specStats = calculateFinalStats(selectedSpec, specBuild);
+            const specSpA = specStats.sa;
+            const specPower = parseInt(document.getElementById('spec-power').value) || 0;
+
+            const defNature = document.getElementById('def-nature').value;
+
+            let bestHP = 0;
+            let bestSpD = 0;
+            let minFraction = Infinity;
+            let bestDmg = 0;
+            let bestFinalHP = 0;
+
+            // Iterate over all possible additions
+            for (let cHP = 0; cHP <= pointsToAllocate; cHP++) {
+                const cSpD = pointsToAllocate - cHP;
+                if (cHP <= maxHPAlloc && cSpD <= maxSpDAlloc) {
+                    const tempPts = { ...defUser };
+                    tempPts.hp += cHP;
+                    tempPts.sd += cSpD;
+
+                    const finalStats = calculateFinalStats(selectedDef, new PokemonBuild(tempPts, defNature));
+                    const currentHP = finalStats.hp;
+                    const currentSpD = finalStats.sd;
+
+                    const dmg = calculateDamage(specPower, specSpA, currentSpD);
+                    const fraction = dmg / currentHP;
+
+                    if (fraction < minFraction) {
+                        minFraction = fraction;
+                        bestHP = cHP;
+                        bestSpD = cSpD;
+                        bestDmg = dmg;
+                        bestFinalHP = currentHP;
+                    }
+                }
+            }
+
+            // Save results
+            defCalculatedAdditions = { hp: bestHP, at: 0, df: 0, sa: 0, sd: bestSpD, sp: 0 };
+            displayResults('SPECIAL', bestHP, 0, bestSpD, null, bestDmg, minFraction, bestFinalHP);
+        });
+
+        // Mixed Bulk Optimizer
+        document.getElementById('btn-calc-mixed').addEventListener('click', () => {
+            const defUser = getUserPoints('def');
+            const totalUser = Object.values(defUser).reduce((a, b) => a + b, 0);
+            if (totalUser > 66) return;
+
+            const leftovers = 66 - totalUser;
+            const maxHPAlloc = 32 - defUser.hp;
+            const maxDefAlloc = 32 - defUser.df;
+            const maxSpDAlloc = 32 - defUser.sd;
+            const pointsToAllocate = Math.min(leftovers, maxHPAlloc + maxDefAlloc + maxSpDAlloc);
+
+            // Attacker Stats
+            const physUser = getUserPoints('phys');
+            const physNature = document.getElementById('phys-nature').value;
+            const physBuild = new PokemonBuild(physUser, physNature);
+            const physStats = calculateFinalStats(selectedPhys, physBuild);
+            const physAtk = physStats.at;
+            const physPower = parseInt(document.getElementById('phys-power').value) || 0;
+
+            const specUser = getUserPoints('spec');
+            const specNature = document.getElementById('spec-nature').value;
+            const specBuild = new PokemonBuild(specUser, specNature);
+            const specStats = calculateFinalStats(selectedSpec, specBuild);
+            const specSpA = specStats.sa;
+            const specPower = parseInt(document.getElementById('spec-power').value) || 0;
+
+            const defNature = document.getElementById('def-nature').value;
+
+            let bestHP = 0;
+            let bestDef = 0;
+            let bestSpD = 0;
+            let minFraction = Infinity;
+            let bestPhysDmg = 0;
+            let bestSpecDmg = 0;
+            let bestFinalHP = 0;
+
+            // Iterate HP, Def, and SpD allocations
+            for (let cHP = 0; cHP <= pointsToAllocate; cHP++) {
+                if (cHP > maxHPAlloc) continue;
+                for (let cDef = 0; cDef <= pointsToAllocate - cHP; cDef++) {
+                    if (cDef > maxDefAlloc) continue;
+                    const cSpD = pointsToAllocate - cHP - cDef;
+                    if (cSpD > maxSpDAlloc) continue;
+
+                    const tempPts = { ...defUser };
+                    tempPts.hp += cHP;
+                    tempPts.df += cDef;
+                    tempPts.sd += cSpD;
+
+                    const finalStats = calculateFinalStats(selectedDef, new PokemonBuild(tempPts, defNature));
+                    const currentHP = finalStats.hp;
+                    const currentDef = finalStats.df;
+                    const currentSpD = finalStats.sd;
+
+                    const physDmg = calculateDamage(physPower, physAtk, currentDef);
+                    const specDmg = calculateDamage(specPower, specSpA, currentSpD);
+                    const fraction = (physDmg + specDmg) / currentHP;
+
+                    if (fraction < minFraction) {
+                        minFraction = fraction;
+                        bestHP = cHP;
+                        bestDef = cDef;
+                        bestSpD = cSpD;
+                        bestPhysDmg = physDmg;
+                        bestSpecDmg = specDmg;
+                        bestFinalHP = currentHP;
+                    }
+                }
+            }
+
+            // Save results
+            defCalculatedAdditions = { hp: bestHP, at: 0, df: bestDef, sa: 0, sd: bestSpD, sp: 0 };
+            displayResults('MIXED', bestHP, bestDef, bestSpD, bestPhysDmg, bestSpecDmg, minFraction, bestFinalHP);
+        });
+
+        // Displays the results of the solver in the UI
+        function displayResults(mode, hpAdd, defAdd, spdAdd, physDmg, specDmg, fraction, finalHP) {
+            // Update table Calculated Points Column
+            document.getElementById('def-calc-hp').textContent = hpAdd > 0 ? `+${hpAdd}` : '0';
+            document.getElementById('def-calc-at').textContent = '0';
+            document.getElementById('def-calc-df').textContent = defAdd > 0 ? `+${defAdd}` : '0';
+            document.getElementById('def-calc-sa').textContent = '0';
+            document.getElementById('def-calc-sd').textContent = spdAdd > 0 ? `+${spdAdd}` : '0';
+            document.getElementById('def-calc-sp').textContent = '0';
+
+            // Light up the calculated stats
+            const keys = ['hp', 'at', 'df', 'sa', 'sd', 'sp'];
+            keys.forEach(k => {
+                const el = document.getElementById(`def-calc-${k}`);
+                if (el) {
+                    const val = parseInt(el.textContent) || 0;
+                    if (val > 0) {
+                        el.style.color = '#34d399';
+                        el.style.textShadow = '0 0 8px rgba(52, 211, 153, 0.4)';
+                    } else {
+                        el.style.color = '#94a3b8';
+                        el.style.textShadow = 'none';
+                    }
+                }
+            });
+
+            // Update final stats column
+            updateAllStats();
+
+            // Populate Results Card
+            const panel = document.getElementById('results-panel');
+            panel.style.display = 'flex';
+
+            document.getElementById('results-type-badge').textContent = mode;
+            document.getElementById('res-pts').textContent = `+${hpAdd} HP / +${defAdd} Def / +${spdAdd} SpD`;
+            document.getElementById('res-fraction').textContent = `${(fraction * 100).toFixed(2)}%`;
+
+            const physContainer = document.getElementById('res-damage-phys-container');
+            const specContainer = document.getElementById('res-damage-spec-container');
+
+            if (mode === 'PHYSICAL') {
+                physContainer.style.display = 'block';
+                specContainer.style.display = 'none';
+                document.getElementById('res-dmg-phys').textContent = `${physDmg} / ${finalHP} HP`;
+            } else if (mode === 'SPECIAL') {
+                physContainer.style.display = 'none';
+                specContainer.style.display = 'block';
+                document.getElementById('res-dmg-spec').textContent = `${specDmg} / ${finalHP} HP`;
+            } else {
+                physContainer.style.display = 'block';
+                specContainer.style.display = 'block';
+                document.getElementById('res-dmg-phys').textContent = `${physDmg} / ${finalHP} HP`;
+                document.getElementById('res-dmg-spec').textContent = `${specDmg} / ${finalHP} HP`;
+            }
+
+            // Scroll panel into view smoothly
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+
+</html>
