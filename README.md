@@ -13,4 +13,18 @@ This repository is configured to host various interactive applications on GitHub
 
 ## Development & Hosting
 
-Deployments are managed via GitHub Pages. Commits pushed to the `main` branch will automatically build and publish to the live site.
+Interactive tools in `src/` are written in **TypeScript** and compiled using `tsc`.
+
+### Building
+```bash
+# Install dev dependencies
+npm install
+
+# Compile TypeScript to pokemon/dist/
+npm run build
+
+# Watch mode during development
+npm run watch
+```
+
+Deployments are managed via GitHub Pages. Commits pushed to the `main` branch publish directly to the live site.

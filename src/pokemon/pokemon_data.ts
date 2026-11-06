@@ -1,19 +1,25 @@
-/**
- * Pokemon Base Stats & Pokedex Data
- * Source: https://github.com/smogon/damage-calc
- *
- * Stats format: { hp, at, df, sa, sd, sp }
- */
+export interface BaseStats {
+  hp: number;
+  at: number;
+  df: number;
+  sa: number;
+  sd: number;
+  sp: number;
+}
 
-/**
- * Pokemon Base Stats & Pokedex Data
- * Source: https://github.com/smogon/damage-calc
- *
- * Stats format: { hp, at, df, sa, sd, sp }
- * Sets: gen1-gen9 = introduced generation, reg-m-a = Regulation M-A, reg-m-b = Regulation M-B
- */
+export type StatName = keyof BaseStats;
 
-const REG_M_A_LIST = new Set([
+export interface PokemonDataEntry {
+  num?: number;
+  types: string[];
+  bs: BaseStats;
+  weightkg?: number;
+  sets: string[];
+}
+
+export type PokemonDataset = Record<string, PokemonDataEntry>;
+
+const REG_M_A_LIST: Set<string> = new Set([
   'Abomasnow', 'Abomasnow-mega', 'Absol', 'Absol-mega', 'Aegislash', 'Aerodactyl',
   'Aerodactyl-mega', 'Aggron', 'Aggron-mega', 'Alakazam', 'Alcremie', 'Altaria', 'Altaria-mega',
   'Ampharos', 'Ampharos-mega', 'Appletun', 'Araquanid', 'Arbok', 'Arcanine', 'Arcanine-Hisui',
@@ -65,10 +71,10 @@ const REG_M_B_ONLY_LIST = new Set([
   'Swampert-mega', 'Vileplume',
 ]);
 
-const REG_M_B_LIST = new Set([...REG_M_A_LIST, ...REG_M_B_ONLY_LIST]);
+const REG_M_B_LIST: Set<string> = new Set([...REG_M_A_LIST, ...REG_M_B_ONLY_LIST]);
 
 // ─── Main Pokemon Data ────────────────────────────────────────────────────────
-const POKEMON_DATA = {
+const POKEMON_DATA: PokemonDataset = {
   'Abomasnow': { num: 460, types: ['Grass', 'Ice'], bs: { hp: 90, at: 92, df: 75, sa: 92, sd: 85, sp: 60 }, weightkg: 135.5, sets: ['gen4', 'reg-m-a', 'reg-m-b'] },
   'Abomasnow-mega': { num: 460, types: ['Grass', 'Ice'], bs: { hp: 90, at: 132, df: 105, sa: 132, sd: 105, sp: 30 }, weightkg: 185.0, sets: ['gen6', 'mega', 'reg-m-a', 'reg-m-b'] },
   'Abra': { num: 63, types: ['Psychic'], bs: { hp: 25, at: 20, df: 15, sa: 105, sd: 55, sp: 90 }, weightkg: 19.5, sets: ['gen1'] },
@@ -596,14 +602,14 @@ const POKEMON_DATA = {
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 
 /** Returns an object of all Pokemon belonging to a given set tag */
-function getPokemonBySet(setName) {
+function getPokemonBySet(setName: string): PokemonDataset {
   return Object.fromEntries(
     Object.entries(POKEMON_DATA).filter(([, data]) => data.sets.includes(setName))
   );
 }
 
 /** Returns Pokemon that belong to ALL of the given set tags */
-function getPokemonByAllSets(setNames) {
+function getPokemonByAllSets(setNames: string[]): PokemonDataset {
   return Object.fromEntries(
     Object.entries(POKEMON_DATA).filter(([, data]) =>
       setNames.every(s => data.sets.includes(s))
@@ -612,7 +618,7 @@ function getPokemonByAllSets(setNames) {
 }
 
 /** Returns the Base Stat Total for a named Pokemon */
-function getBST(name) {
+function getBST(name: string): number {
   const p = POKEMON_DATA[name];
   if (!p) return 0;
   const { hp, at, df, sa, sd, sp } = p.bs;
@@ -621,10 +627,10 @@ function getBST(name) {
 
 /**
  * Returns entries sorted descending by a given stat.
- * @param {string} stat - One of: 'hp','at','df','sa','sd','sp','bst'
- * @param {string} [setFilter] - Optional set tag to filter by first
+ * @param stat - One of: 'hp','at','df','sa','sd','sp','bst'
+ * @param setFilter - Optional set tag to filter by first
  */
-function sortPokemonByStat(stat, setFilter) {
+function sortPokemonByStat(stat: StatName | 'bst', setFilter?: string): [string, PokemonDataEntry][] {
   let entries = Object.entries(POKEMON_DATA);
   if (setFilter) {
     entries = entries.filter(([, data]) => data.sets.includes(setFilter));
@@ -649,6 +655,21 @@ export {
   sortPokemonByStat,
 };
 
+declare global {
+  interface Window {
+    PokemonData?: {
+      POKEMON_DATA: PokemonDataset;
+      REG_M_A_LIST: Set<string>;
+      REG_M_B_LIST: Set<string>;
+      REG_M_B_ONLY_LIST: Set<string>;
+      getPokemonBySet: typeof getPokemonBySet;
+      getPokemonByAllSets: typeof getPokemonByAllSets;
+      getBST: typeof getBST;
+      sortPokemonByStat: typeof sortPokemonByStat;
+    };
+  }
+}
+
 if (typeof window !== 'undefined') {
   window.PokemonData = {
     POKEMON_DATA,
@@ -661,3 +682,4 @@ if (typeof window !== 'undefined') {
     sortPokemonByStat,
   };
 }
+

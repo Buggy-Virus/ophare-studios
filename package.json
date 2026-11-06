@@ -1,0 +1,13 @@
+{
+  "name": "ophare-studios",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OPHare Studios portal and web utilities",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}
